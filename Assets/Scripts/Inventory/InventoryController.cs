@@ -102,14 +102,14 @@ public class InventoryController
         inventoryModel.CurrentWeight -= inventoryModel.InventoryItems[selectedItem].ItemWeight;
         inventoryView.SetWeightText(inventoryModel.CurrentWeight);
 
-        ActionPopUp(0, actionPopUp,selectedItem);
+        ActionPopUp(0, actionPopUp);
 
         inventoryModel.InventoryItems[selectedItem] = null;
 
         inventoryView.StartActionPopUpCoroutine();
     }
 
-    private void ActionPopUp(int i,GameObject actionPopUp,int index)
+    private void ActionPopUp(int i,GameObject actionPopUp)
     {
         if(i==0)
         {
@@ -117,7 +117,7 @@ public class InventoryController
             actionPopUp.transform.GetChild(1).gameObject.SetActive(false);
             
             TextMeshProUGUI soldText = actionPopUp.transform.GetChild(0).GetComponent<TextMeshProUGUI>();
-            soldText.text = $"Item Sold!!! You Gained {inventoryModel.InventoryItems[index].ItemSellPrice * inventoryModel.InventoryItems[index].ItemQuantity} Gold";
+            soldText.text = $"Item Sold!!! You Gained {inventoryModel.InventoryItems[selectedItem].ItemSellPrice * inventoryModel.InventoryItems[selectedItem].ItemQuantity} Gold";
         }
     }
 }
