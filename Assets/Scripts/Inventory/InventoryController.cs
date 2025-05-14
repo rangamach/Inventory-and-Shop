@@ -89,9 +89,7 @@ public class InventoryController
         IconPopUp.SetActive(true);
     }
 
-   // public void CloseInventoryIconPopUp() => selectedItem = -1;
-
-    public void SellItem(GameObject iconTransforms, Sprite emptySprite)
+    public void SellItem(GameObject iconTransforms, Sprite emptySprite, GameObject actionPopUp)
     {
         Transform selectedIcon = iconTransforms.transform.GetChild(selectedItem);
 
@@ -104,6 +102,22 @@ public class InventoryController
         inventoryModel.CurrentWeight -= inventoryModel.InventoryItems[selectedItem].ItemWeight;
         inventoryView.SetWeightText(inventoryModel.CurrentWeight);
 
+        ActionPopUp(0, actionPopUp,selectedItem);
+
         inventoryModel.InventoryItems[selectedItem] = null;
+
+        inventoryView.StartActionPopUpCoroutine();
+    }
+
+    private void ActionPopUp(int i,GameObject actionPopUp,int index)
+    {
+        if(i==0)
+        {
+            actionPopUp.transform.GetChild(0).gameObject.SetActive(true);
+            actionPopUp.transform.GetChild(1).gameObject.SetActive(false);
+            
+            TextMeshProUGUI soldText = actionPopUp.transform.GetChild(0).GetComponent<TextMeshProUGUI>();
+            soldText.text = $"Item Sold!!! You Gained {inventoryModel.InventoryItems[index].ItemSellPrice * inventoryModel.InventoryItems[index].ItemQuantity} Gold";
+        }
     }
 }

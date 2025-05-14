@@ -20,7 +20,5 @@ public class InventoryModel
         this.MaximumWeight = max_weight;
         this.CurrentWeight = 0;
         this.CurrentBalance = 0;
-
-        
     }
 }

@@ -3,6 +3,8 @@ using TMPro;
 using Unity.VisualScripting;
 using UnityEngine.UI;
 using UnityEngine.Rendering;
+using System.Collections.Generic;
+using System.Collections;
 
 public class InventoryView : MonoBehaviour
 {
@@ -29,6 +31,10 @@ public class InventoryView : MonoBehaviour
     [SerializeField] private TextMeshProUGUI iconWeightText;
     [SerializeField] private TextMeshProUGUI iconRarityText;
     [SerializeField] private TextMeshProUGUI iconTypeText;
+
+    [Header("Action Pop Up")]
+    [SerializeField] private float durationOfActionPopUp;
+    [SerializeField] private GameObject actionPopUp;
     
 
     void Start()
@@ -38,7 +44,7 @@ public class InventoryView : MonoBehaviour
         InventoryIconButtonEvent();
     }
     public void SetBalanceText(int balance) => balanceText.text = $"Gold: {balance}";
-    public void SetWeightText(int weight) => weightText.text = $"Weight: {weight}";
+    public void SetWeightText(int weight) => weightText.text = $"Weight: {weight} / {maxWeight}";
     public void SetIcon(InventoryItem item, int i)
     {
         if (item == null) return;
@@ -59,6 +65,17 @@ public class InventoryView : MonoBehaviour
             iconButton.onClick.AddListener(() => OnInventoryIconClicked(index));
         }
     }
-    public void SellItem() => inventoryController.SellItem(iconTransforms, emptyIcon);
+    public void SellItem()
+    {
+        inventoryController.SellItem(iconTransforms, emptyIcon, actionPopUp);
+    }
+    public void StartActionPopUpCoroutine() => StartCoroutine(PopUpDuration());
+
+    private IEnumerator PopUpDuration()
+    {
+        actionPopUp.SetActive(true);
+        yield return new WaitForSeconds(durationOfActionPopUp);
+        actionPopUp.SetActive(false);
+    }
     private void OnInventoryIconClicked(int i) => inventoryController.InventoryPopUpIcon(i, iconPopUp,iconNameText,iconQuantityText,iconDescriptionText,iconPriceText,iconWeightText,iconRarityText,iconTypeText);
 }

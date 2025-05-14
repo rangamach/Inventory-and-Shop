@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ItemName: Apple
   ItemType: 2
-  ItemDescription: Eating an apple restores some health.
+  ItemDescription: Eating an apple restores little  health.
   ItemBuyPrice: 10
   ItemSellPrice: 5
   ItemWeight: 1

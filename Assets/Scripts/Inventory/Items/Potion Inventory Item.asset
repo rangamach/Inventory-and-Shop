@@ -10,14 +10,14 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 193a400c8bcdf3e4cbbe733fa77b5ece, type: 3}
-  m_Name: Beer Inventory Item
+  m_Name: Potion Inventory Item
   m_EditorClassIdentifier: 
-  ItemName: Beer
+  ItemName: Potion
   ItemType: 2
-  ItemDescription: Drinking beer enhances your melee attack damage for 10 seconds.
-  ItemBuyPrice: 35
-  ItemSellPrice: 15
+  ItemDescription: Drinkng an potion restores full health.
+  ItemBuyPrice: 10
+  ItemSellPrice: 5
   ItemWeight: 3
-  ItemRarity: 1
-  ItemQuantity: 2
-  ItemIcon: {fileID: 21300000, guid: dbaa50961e3cd37468021eb65d631c9f, type: 3}
+  ItemRarity: 2
+  ItemQuantity: 5
+  ItemIcon: {fileID: 21300000, guid: 60c1d42986dc0094c808b9e135f31ba2, type: 3}
