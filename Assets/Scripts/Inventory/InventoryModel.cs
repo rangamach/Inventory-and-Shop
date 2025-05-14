@@ -5,16 +5,12 @@ using UnityEngine;
 public class InventoryModel
 {
     private InventoryController inventoryController;
-    //public InventoryItem emptyItemPrefab;
-
-    //public InventoryItem[] InventoryItems;
+    public List<InventoryItem> InventoryItems = new List<InventoryItem>();
 
     public int InventorySize;
     public int CurrentWeight;
     public int MaximumWeight;
     public int CurrentBalance;
-
-    public List<InventoryItem> InventoryItems = new List<InventoryItem>();
 
 
     public InventoryModel(InventoryController controller, int size, int max_weight)

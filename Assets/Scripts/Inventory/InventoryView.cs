@@ -2,6 +2,7 @@ using UnityEngine;
 using TMPro;
 using Unity.VisualScripting;
 using UnityEngine.UI;
+using UnityEngine.Rendering;
 
 public class InventoryView : MonoBehaviour
 {
@@ -13,24 +14,51 @@ public class InventoryView : MonoBehaviour
     [SerializeField] private int maxWeight;
     [SerializeField] private GameObject iconTransforms;
     [SerializeField] private InventoryItem[] AllItems;
+    [SerializeField] private GameObject iconPopUp;
+    [SerializeField] private Sprite emptyIcon;
 
-    [Header("UI")]
+    [Header("Main UI")]
     [SerializeField] private TextMeshProUGUI balanceText;
     [SerializeField] private TextMeshProUGUI weightText;
 
-    //[Header("Testing")]
-    //[SerializeField] private InventoryItem apple;
+    [Header("Icon Pop Up UI")]
+    [SerializeField] private TextMeshProUGUI iconNameText;
+    [SerializeField] private TextMeshProUGUI iconQuantityText;
+    [SerializeField] private TextMeshProUGUI iconDescriptionText;
+    [SerializeField] private TextMeshProUGUI iconPriceText;
+    [SerializeField] private TextMeshProUGUI iconWeightText;
+    [SerializeField] private TextMeshProUGUI iconRarityText;
+    [SerializeField] private TextMeshProUGUI iconTypeText;
     
 
-    void Start() => inventoryController = new InventoryController(this, size, maxWeight);
+    void Start()
+    {
+        inventoryController = new InventoryController(this, size, maxWeight);
+
+        InventoryIconButtonEvent();
+    }
     public void SetBalanceText(int balance) => balanceText.text = $"Gold: {balance}";
     public void SetWeightText(int weight) => weightText.text = $"Weight: {weight}";
     public void SetIcon(InventoryItem item, int i)
     {
+        if (item == null) return;
+
         GameObject icon = iconTransforms.transform.GetChild(i).gameObject;
 
         icon.transform.GetChild(0).gameObject.GetComponent<Image>().sprite = item.ItemIcon;
-        icon.transform.GetChild(1).gameObject.GetComponent<TextMeshProUGUI>().text = item.ItemSellPrice.ToString();
+        icon.transform.GetChild(1).gameObject.GetComponent<TextMeshProUGUI>().text = item.ItemQuantity.ToString();
     }
     public void GatherResources() => inventoryController.AddResourcesInInventory(AllItems);
+    public void InventoryIconButtonEvent()
+    {
+        int i;
+        for (i = 0; i < iconTransforms.transform.childCount; i++)
+        {
+            Button iconButton = iconTransforms.transform.GetChild(i).GetComponent<Button>();
+            int index = i;
+            iconButton.onClick.AddListener(() => OnInventoryIconClicked(index));
+        }
+    }
+    public void SellItem() => inventoryController.SellItem(iconTransforms, emptyIcon);
+    private void OnInventoryIconClicked(int i) => inventoryController.InventoryPopUpIcon(i, iconPopUp,iconNameText,iconQuantityText,iconDescriptionText,iconPriceText,iconWeightText,iconRarityText,iconTypeText);
 }

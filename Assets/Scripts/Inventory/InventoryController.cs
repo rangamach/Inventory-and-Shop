@@ -1,10 +1,15 @@
 using System.Linq;
+using TMPro;
+using UnityEditor.Experimental.GraphView;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class InventoryController
 {
     private InventoryModel inventoryModel;
     private InventoryView inventoryView;
+
+    private int selectedItem;
     public InventoryController(InventoryView view, int size, int max_weight)
     {
         this.inventoryModel = new InventoryModel(this, size, max_weight);
@@ -13,38 +18,19 @@ public class InventoryController
         inventoryView.SetBalanceText(inventoryModel.CurrentBalance);
         inventoryView.SetWeightText(inventoryModel.CurrentWeight);
 
-        InitializeItemsInList();
+        InitializeNullItemsInInventoryItems();
     }
 
-    public void InitializeItemsInList()
+    public void InitializeNullItemsInInventoryItems()
     {
         int i;
         for (i = 0; i < inventoryModel.InventorySize; i++)
             inventoryModel.InventoryItems.Add(null);
     }
 
-    //public void InitializeItemsInList()
-    //{
-    //    int i = 0;
-    //    for(i=0; i<inventoryModel.InventorySize; i++)
-    //    { 
-    //        inventoryModel.InventoryItems[i] = ScriptableObject.CreateInstance<InventoryItem>();
-
-    //        inventoryModel.InventoryItems[i].ItemName = inventoryModel.emptyItemPrefab.ItemName;
-    //        inventoryModel.InventoryItems[i].ItemType = inventoryModel.emptyItemPrefab.ItemType;
-    //        inventoryModel.InventoryItems[i].ItemDescription = inventoryModel.emptyItemPrefab.ItemDescription;
-    //        inventoryModel.InventoryItems[i].ItemBuyPrice = inventoryModel.emptyItemPrefab.ItemBuyPrice;
-    //        inventoryModel.InventoryItems[i].ItemSellPrice = inventoryModel.emptyItemPrefab.ItemSellPrice;
-    //        inventoryModel.InventoryItems[i].ItemWeight = inventoryModel.emptyItemPrefab.ItemWeight;
-    //        inventoryModel.InventoryItems[i].ItemRarity = inventoryModel.emptyItemPrefab.ItemRarity;
-    //        inventoryModel.InventoryItems[i].ItemQuantity = inventoryModel.emptyItemPrefab.ItemQuantity;
-    //        inventoryModel.InventoryItems[i].ItemIcon = inventoryModel.emptyItemPrefab.ItemIcon;
-    //    }
-    //}
-
     public void AddResourcesInInventory(InventoryItem[] allItems)
     {
-        if(inventoryModel.CurrentWeight < 10)
+        if(inventoryModel.CurrentWeight < 15)
         {
             int x = Random.Range(1, 5);
             int i = 0;
@@ -53,10 +39,20 @@ public class InventoryController
             int j;
             for(j = i; j<i+x;j++)
             {
-                inventoryModel.InventoryItems[j] = allItems[Random.Range(0,allItems.Count() - 1)];
-                inventoryModel.CurrentWeight += inventoryModel.InventoryItems[j].ItemWeight;
-                inventoryView.SetWeightText(inventoryModel.CurrentWeight);
-                inventoryView.SetIcon(inventoryModel.InventoryItems[j], j);
+                InventoryItem itemToAdd = allItems[Random.Range(0, allItems.Count())];
+                InventoryItem newItem = inventoryModel.InventoryItems[j];
+                if (newItem != null)
+                {
+                    x++;
+                    continue;
+                }
+                if (itemToAdd.ItemWeight + inventoryModel.CurrentWeight <= inventoryModel.MaximumWeight)
+                {
+                    inventoryModel.InventoryItems[j] = itemToAdd;
+                    inventoryModel.CurrentWeight += inventoryModel.InventoryItems[j].ItemWeight;
+                    inventoryView.SetWeightText(inventoryModel.CurrentWeight);
+                    inventoryView.SetIcon(inventoryModel.InventoryItems[j], j);
+                }
             }
         }
     }
@@ -73,5 +69,41 @@ public class InventoryController
     private bool CanAfford(InventoryItem item)
     {
         return inventoryModel.CurrentBalance >= item.ItemBuyPrice * item.ItemQuantity;
+    }
+
+    public void InventoryPopUpIcon(int index, GameObject IconPopUp, TextMeshProUGUI iconNameText, TextMeshProUGUI iconQuantityText, TextMeshProUGUI iconDescriptionText, TextMeshProUGUI iconPriceText, TextMeshProUGUI iconWeightText, TextMeshProUGUI iconRarityText, TextMeshProUGUI iconTypeText)
+    {
+        InventoryItem item = inventoryModel.InventoryItems[index];
+        if (item == null) return;
+
+        selectedItem = index;
+
+        iconNameText.text = item.ItemName;
+        iconQuantityText.text = $"({item.ItemQuantity.ToString()})";
+        iconDescriptionText.text = item.ItemDescription;
+        iconPriceText.text = $"Price: {(item.ItemSellPrice * item.ItemQuantity).ToString()}";
+        iconWeightText.text = $"Weight: {item.ItemWeight.ToString()}";
+        iconRarityText.text = $"Rarity: {item.ItemRarity.ToString()}";
+        iconTypeText.text = $"Type: {item.ItemType.ToString()}";
+
+        IconPopUp.SetActive(true);
+    }
+
+   // public void CloseInventoryIconPopUp() => selectedItem = -1;
+
+    public void SellItem(GameObject iconTransforms, Sprite emptySprite)
+    {
+        Transform selectedIcon = iconTransforms.transform.GetChild(selectedItem);
+
+        selectedIcon.GetChild(0).gameObject.GetComponent<Image>().sprite = emptySprite;
+        selectedIcon.GetChild(1).gameObject.GetComponent<TextMeshProUGUI>().text = "";
+
+        inventoryModel.CurrentBalance += inventoryModel.InventoryItems[selectedItem].ItemSellPrice * inventoryModel.InventoryItems[selectedItem].ItemQuantity;
+        inventoryView.SetBalanceText(inventoryModel.CurrentBalance);
+
+        inventoryModel.CurrentWeight -= inventoryModel.InventoryItems[selectedItem].ItemWeight;
+        inventoryView.SetWeightText(inventoryModel.CurrentWeight);
+
+        inventoryModel.InventoryItems[selectedItem] = null;
     }
 }
