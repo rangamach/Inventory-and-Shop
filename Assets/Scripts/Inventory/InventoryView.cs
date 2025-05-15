@@ -40,7 +40,8 @@ public class InventoryView : MonoBehaviour
 
     void Start()
     {
-        inventoryController = new InventoryController(this, size, maxWeight);
+        Debug.Log("view Start." + gameObject.name);
+        inventoryController = new InventoryController(this, size, maxWeight);   
     }
     public void SetBalanceText(int balance) => balanceText.text = $"Gold: {balance}";
     public void SetWeightText(int weight) => weightText.text = $"Weight: {weight} / {maxWeight}";
@@ -60,6 +61,7 @@ public class InventoryView : MonoBehaviour
         for (i = 0; i < inventoryIconTransforms.transform.childCount; i++)
         {
             Button iconButton = inventoryIconTransforms.transform.GetChild(i).GetComponent<Button>();
+            iconButton.onClick.RemoveAllListeners();
             int index = i;
             iconButton.onClick.AddListener(() => OnInventoryIconClicked(index));
         }
@@ -70,8 +72,9 @@ public class InventoryView : MonoBehaviour
         for (i = 0; i < shopIconTransforms.transform.childCount; i++)
         {
             Button iconButton = shopIconTransforms.transform.GetChild(i).GetComponent<Button>();
+            iconButton.onClick.RemoveAllListeners();
             int index = i;
-            //iconButton.onClick.AddListener(() => OnInventoryIconClicked(index));
+            iconButton.onClick.AddListener(() => OnShopIconClicked(index));
         }
     }
     public void SellItem()
@@ -87,6 +90,7 @@ public class InventoryView : MonoBehaviour
         actionPopUp.SetActive(false);
     }
     private void OnInventoryIconClicked(int i) => inventoryController.InventoryPopUpIcon(i, iconPopUp,iconNameText,iconQuantityText,iconDescriptionText,iconPriceText,iconWeightText,iconRarityText,iconTypeText);
-    public void RefreshShopItems() => inventoryController.RefreshShopItems(shopIconTransforms, AllItems); 
-
+    private void OnShopIconClicked(int i) => inventoryController.ShopPopUpIcon(i,actionPopUp);
+    public void RefreshShopItems() => inventoryController.RefreshShopItems(shopIconTransforms, AllItems);
+    public void BuyItem() => inventoryController.BuyItem(inventoryIconTransforms,shopIconTransforms,emptyIcon);
 }
