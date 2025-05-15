@@ -6,6 +6,7 @@ public class InventoryModel
 {
     private InventoryController inventoryController;
     public List<InventoryItem> InventoryItems = new List<InventoryItem>();
+    public List<InventoryItem> ShopItems = new List<InventoryItem>();
 
     public int InventorySize;
     public int CurrentWeight;

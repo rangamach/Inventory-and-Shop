@@ -14,7 +14,8 @@ public class InventoryView : MonoBehaviour
     [Header("Initial Data")]
     [SerializeField] private int size;
     [SerializeField] private int maxWeight;
-    [SerializeField] private GameObject iconTransforms;
+    [SerializeField] private GameObject inventoryIconTransforms;
+    [SerializeField] private GameObject shopIconTransforms;
     [SerializeField] private InventoryItem[] AllItems;
     [SerializeField] private GameObject iconPopUp;
     [SerializeField] private Sprite emptyIcon;
@@ -23,7 +24,7 @@ public class InventoryView : MonoBehaviour
     [SerializeField] private TextMeshProUGUI balanceText;
     [SerializeField] private TextMeshProUGUI weightText;
 
-    [Header("Icon Pop Up UI")]
+    [Header("Inventory UI")]
     [SerializeField] private TextMeshProUGUI iconNameText;
     [SerializeField] private TextMeshProUGUI iconQuantityText;
     [SerializeField] private TextMeshProUGUI iconDescriptionText;
@@ -40,8 +41,6 @@ public class InventoryView : MonoBehaviour
     void Start()
     {
         inventoryController = new InventoryController(this, size, maxWeight);
-
-        InventoryIconButtonEvent();
     }
     public void SetBalanceText(int balance) => balanceText.text = $"Gold: {balance}";
     public void SetWeightText(int weight) => weightText.text = $"Weight: {weight} / {maxWeight}";
@@ -49,7 +48,7 @@ public class InventoryView : MonoBehaviour
     {
         if (item == null) return;
 
-        GameObject icon = iconTransforms.transform.GetChild(i).gameObject;
+        GameObject icon = inventoryIconTransforms.transform.GetChild(i).gameObject;
 
         icon.transform.GetChild(0).gameObject.GetComponent<Image>().sprite = item.ItemIcon;
         icon.transform.GetChild(1).gameObject.GetComponent<TextMeshProUGUI>().text = item.ItemQuantity.ToString();
@@ -58,16 +57,26 @@ public class InventoryView : MonoBehaviour
     public void InventoryIconButtonEvent()
     {
         int i;
-        for (i = 0; i < iconTransforms.transform.childCount; i++)
+        for (i = 0; i < inventoryIconTransforms.transform.childCount; i++)
         {
-            Button iconButton = iconTransforms.transform.GetChild(i).GetComponent<Button>();
+            Button iconButton = inventoryIconTransforms.transform.GetChild(i).GetComponent<Button>();
             int index = i;
             iconButton.onClick.AddListener(() => OnInventoryIconClicked(index));
         }
     }
+    public void ShopIconButtonEvent()
+    {
+        int i;
+        for (i = 0; i < shopIconTransforms.transform.childCount; i++)
+        {
+            Button iconButton = shopIconTransforms.transform.GetChild(i).GetComponent<Button>();
+            int index = i;
+            //iconButton.onClick.AddListener(() => OnInventoryIconClicked(index));
+        }
+    }
     public void SellItem()
     {
-        inventoryController.SellItem(iconTransforms, emptyIcon, actionPopUp);
+        inventoryController.SellItem(inventoryIconTransforms, emptyIcon, actionPopUp);
     }
     public void StartActionPopUpCoroutine() => StartCoroutine(PopUpDuration());
 
@@ -78,4 +87,6 @@ public class InventoryView : MonoBehaviour
         actionPopUp.SetActive(false);
     }
     private void OnInventoryIconClicked(int i) => inventoryController.InventoryPopUpIcon(i, iconPopUp,iconNameText,iconQuantityText,iconDescriptionText,iconPriceText,iconWeightText,iconRarityText,iconTypeText);
+    public void RefreshShopItems() => inventoryController.RefreshShopItems(shopIconTransforms, AllItems); 
+
 }
