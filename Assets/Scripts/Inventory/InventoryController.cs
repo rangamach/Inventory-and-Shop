@@ -1,3 +1,5 @@
+using NUnit.Framework;
+using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using TMPro;
@@ -11,7 +13,8 @@ public class InventoryController
     private InventoryView inventoryView;
 
     private int selectedItem;
-    public InventoryController(InventoryView view, int size, int max_weight)
+
+    public InventoryController(InventoryView view, int size, int max_weight, InventoryItem[] allItems)
     {
         this.inventoryModel = new InventoryModel(this, size, max_weight);
         this.inventoryView = view;
@@ -21,6 +24,7 @@ public class InventoryController
 
         InitializeNullItemsInInventoryItems();
         InitializeNullItemsInShopItems();
+        InitializeRarityItemsLists(allItems);
     }
 
     private void InitializeNullItemsInInventoryItems()
@@ -35,6 +39,31 @@ public class InventoryController
         int i;
         for (i = 0; i < inventoryModel.InventorySize; i++)
             inventoryModel.ShopItems.Add(null);
+    }
+
+    private void InitializeRarityItemsLists(InventoryItem[] allItems)
+    {
+        foreach ( InventoryItem item in allItems)
+        {
+            switch(item.ItemRarity)
+            {
+                case Rarity.Very_Common:
+                    inventoryModel.VeryCommonItems.Add(item);
+                    break;
+                case Rarity.Common:
+                    inventoryModel.CommonItems.Add(item);
+                    break;
+                case Rarity.Rare:
+                    inventoryModel.RareItems.Add(item);
+                    break;
+                case Rarity.Epic:
+                    inventoryModel.EpicItems.Add(item);
+                    break;
+                case Rarity.Legendary:
+                    inventoryModel.LegendaryItems.Add(item);
+                    break;
+            }
+        }
     }
 
     public void AddResourcesInInventory(InventoryItem[] allItems)
@@ -52,7 +81,10 @@ public class InventoryController
             for(j = i; j<i+x;j++)
             {
                 if (j >= inventoryModel.InventorySize) break;
-                InventoryItem itemToAdd = allItems[Random.Range(0, allItems.Count())];
+                List<InventoryItem> itemToAddList = RarityChooser();
+                int z  = Random.Range(0,itemToAddList.Count());
+                InventoryItem itemToAdd = itemToAddList[z];
+                
                 InventoryItem newItem = inventoryModel.InventoryItems[j];
                 if (newItem != null)
                 {
@@ -68,6 +100,21 @@ public class InventoryController
                 }
             }
         }
+    }
+
+    private List<InventoryItem> RarityChooser()
+    {
+        int i = Random.Range(1, 100);
+        if (0 < i && i <= 45)
+            return inventoryModel.VeryCommonItems;
+        else if (46 <= i && i <= 70)
+            return inventoryModel.CommonItems;
+        else if (71 <= i && i <= 85)
+            return inventoryModel.RareItems;
+        else if (86 <= i && i <= 99)
+            return inventoryModel.LegendaryItems;
+        else
+            return null;
     }
 
     private bool CanAfford(InventoryItem item)
@@ -96,9 +143,6 @@ public class InventoryController
     public void SellItem(GameObject inventoryIconTransforms, Sprite emptySprite, GameObject actionPopUp)
     {
         Transform selectedIcon = inventoryIconTransforms.transform.GetChild(selectedItem);
-
-        //selectedIcon.GetChild(0).gameObject.GetComponent<Image>().sprite = emptySprite;
-        //selectedIcon.GetChild(1).gameObject.GetComponent<TextMeshProUGUI>().text = "";
 
         RemoveItemInScene(inventoryIconTransforms, emptySprite);
 
@@ -133,18 +177,20 @@ public class InventoryController
         }
     }
 
-    public void RefreshShopItems(GameObject shopIconTransforms, InventoryItem[] allItems)
+    public void RefreshShopItems(GameObject shopIconTransforms)
     {
         int i;
         for(i = 0; i<inventoryModel.InventorySize; i++)
         {
-            int random = Random.Range(0,allItems.Count());
+            //int random = Random.Range(0,allItems.Count());
+            List<InventoryItem> itemToAddList = RarityChooser();
+            int random = Random.Range(0, itemToAddList.Count());
 
             GameObject icon = shopIconTransforms.transform.GetChild(i).gameObject;
-            icon.transform.GetChild(0).gameObject.GetComponent<Image>().sprite = allItems[random].ItemIcon;
-            icon.transform.GetChild(1).gameObject.GetComponent<TextMeshProUGUI>().text = allItems[random].ItemQuantity.ToString();
+            icon.transform.GetChild(0).gameObject.GetComponent<Image>().sprite = itemToAddList[random].ItemIcon;
+            icon.transform.GetChild(1).gameObject.GetComponent<TextMeshProUGUI>().text = itemToAddList[random].ItemQuantity.ToString();
 
-            inventoryModel.ShopItems[i] = allItems[random];
+            inventoryModel.ShopItems[i] = itemToAddList[random];
         }
     }
 

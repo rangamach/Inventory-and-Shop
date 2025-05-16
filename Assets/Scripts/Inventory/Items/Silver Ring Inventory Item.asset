@@ -10,14 +10,14 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 193a400c8bcdf3e4cbbe733fa77b5ece, type: 3}
-  m_Name: Potion Inventory Item
+  m_Name: Silver Ring Inventory Item
   m_EditorClassIdentifier: 
-  ItemName: Potion
-  ItemType: 2
-  ItemDescription: Drinkng an potion restores full health.
-  ItemBuyPrice: 15
-  ItemSellPrice: 5
+  ItemName: Silver Ring
+  ItemType: 3
+  ItemDescription: Sell for gold.
+  ItemBuyPrice: 45
+  ItemSellPrice: 12
   ItemWeight: 3
-  ItemRarity: 2
-  ItemQuantity: 2
-  ItemIcon: {fileID: 21300000, guid: b7d19ec039fa7b141bd165aa95496c75, type: 3}
+  ItemRarity: 4
+  ItemQuantity: 3
+  ItemIcon: {fileID: 21300000, guid: f84b6dd0347a94f4a9a69ac911fc1f9d, type: 3}

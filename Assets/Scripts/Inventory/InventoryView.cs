@@ -38,11 +38,7 @@ public class InventoryView : MonoBehaviour
     [SerializeField] private GameObject actionPopUp;
     
 
-    void Start()
-    {
-        Debug.Log("view Start." + gameObject.name);
-        inventoryController = new InventoryController(this, size, maxWeight);   
-    }
+    void Start() => inventoryController = new InventoryController(this, size, maxWeight,AllItems); 
     public void SetBalanceText(int balance) => balanceText.text = $"Gold: {balance}";
     public void SetWeightText(int weight) => weightText.text = $"Weight: {weight} / {maxWeight}";
     public void SetIcon(InventoryItem item, int i)
@@ -77,12 +73,8 @@ public class InventoryView : MonoBehaviour
             iconButton.onClick.AddListener(() => OnShopIconClicked(index));
         }
     }
-    public void SellItem()
-    {
-        inventoryController.SellItem(inventoryIconTransforms, emptyIcon, actionPopUp);
-    }
+    public void SellItem() => inventoryController.SellItem(inventoryIconTransforms, emptyIcon, actionPopUp);
     public void StartActionPopUpCoroutine() => StartCoroutine(PopUpDuration());
-
     private IEnumerator PopUpDuration()
     {
         actionPopUp.SetActive(true);
@@ -91,6 +83,6 @@ public class InventoryView : MonoBehaviour
     }
     private void OnInventoryIconClicked(int i) => inventoryController.InventoryPopUpIcon(i, iconPopUp,iconNameText,iconQuantityText,iconDescriptionText,iconPriceText,iconWeightText,iconRarityText,iconTypeText);
     private void OnShopIconClicked(int i) => inventoryController.ShopPopUpIcon(i,actionPopUp);
-    public void RefreshShopItems() => inventoryController.RefreshShopItems(shopIconTransforms, AllItems);
+    public void RefreshShopItems() => inventoryController.RefreshShopItems(shopIconTransforms);
     public void BuyItem() => inventoryController.BuyItem(inventoryIconTransforms,shopIconTransforms,emptyIcon);
 }

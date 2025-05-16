@@ -8,6 +8,12 @@ public class InventoryModel
     public List<InventoryItem> InventoryItems = new List<InventoryItem>();
     public List<InventoryItem> ShopItems = new List<InventoryItem>();
 
+    public List<InventoryItem> VeryCommonItems = new List<InventoryItem>();
+    public List<InventoryItem> CommonItems = new List<InventoryItem>();
+    public List<InventoryItem> RareItems = new List<InventoryItem>();
+    public List<InventoryItem> EpicItems = new List<InventoryItem>();
+    public List<InventoryItem> LegendaryItems = new List<InventoryItem>();
+
     public int InventorySize;
     public int CurrentWeight;
     public int MaximumWeight;
