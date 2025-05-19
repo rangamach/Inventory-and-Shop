@@ -41,6 +41,9 @@ public class InventoryView : MonoBehaviour
     [Header("Action Pop Up")]
     [SerializeField] private float durationOfActionPopUp;
     [SerializeField] private GameObject actionPopUp;
+
+    [Header("Audio Manager")]
+    [SerializeField] private AudioManager audioManager;
     
 
     void Start() => inventoryController = new InventoryController(this, size, maxWeight,AllItems); 
@@ -58,22 +61,26 @@ public class InventoryView : MonoBehaviour
     public void GatherResources() => inventoryController.AddResourcesInInventory(AllItems);
     public void InventoryIconButtonEvent()
     {
+        audioManager.PlaySoundEffect(AudioType.ButtonClick);
+
         int i;
         for (i = 0; i < inventoryIconTransforms.transform.childCount; i++)
         {
             Button iconButton = inventoryIconTransforms.transform.GetChild(i).GetComponent<Button>();
-            //iconButton.onClick.RemoveAllListeners();
+            iconButton.onClick.RemoveAllListeners();
             int index = i;
             iconButton.onClick.AddListener(() => OnInventoryIconClicked(index));
         }
     }
     public void ShopIconButtonEvent()
     {
+        audioManager.PlaySoundEffect(AudioType.ButtonClick);
+
         int i;
         for (i = 0; i < shopIconTransforms.transform.childCount; i++)
         {
             Button iconButton = shopIconTransforms.transform.GetChild(i).GetComponent<Button>();
-            //iconButton.onClick.RemoveAllListeners();
+            iconButton.onClick.RemoveAllListeners();
             int index = i;
             iconButton.onClick.AddListener(() => OnShopIconClicked(index));
         }
