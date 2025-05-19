@@ -278,10 +278,13 @@ public class InventoryController
             int i;
             for(i = 0;i<inventoryModel.ShopItems.Count;i++)
             {
-                shopIcons.transform.GetChild(i).gameObject.GetComponent<Button>().interactable = true;
+                if (inventoryModel.ShopItems[i] != null)
+                {
+                    shopIcons.transform.GetChild(i).gameObject.GetComponent<Button>().interactable = true;
 
-                shopIcons.transform.GetChild(i).transform.GetChild(0).GetComponent<Image>().sprite = inventoryModel.ShopItems[i].ItemIcon;
-                shopIcons.transform.GetChild(i).transform.GetChild(1).GetComponent<TextMeshProUGUI>().text = inventoryModel.ShopItems[i].ItemQuantity.ToString();
+                    shopIcons.transform.GetChild(i).transform.GetChild(0).GetComponent<Image>().sprite = inventoryModel.ShopItems[i].ItemIcon;
+                    shopIcons.transform.GetChild(i).transform.GetChild(1).GetComponent<TextMeshProUGUI>().text = inventoryModel.ShopItems[i].ItemQuantity.ToString();
+                }
             }
         }
         else
