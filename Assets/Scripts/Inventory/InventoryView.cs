@@ -5,6 +5,7 @@ using UnityEngine.UI;
 using UnityEngine.Rendering;
 using System.Collections.Generic;
 using System.Collections;
+using UnityEngine.EventSystems;
 
 public class InventoryView : MonoBehaviour
 {
@@ -33,6 +34,10 @@ public class InventoryView : MonoBehaviour
     [SerializeField] private TextMeshProUGUI iconRarityText;
     [SerializeField] private TextMeshProUGUI iconTypeText;
 
+    [Header("Shop UI")]
+    [SerializeField] private TextMeshProUGUI typeText;
+    [SerializeField] private Button allButton;
+
     [Header("Action Pop Up")]
     [SerializeField] private float durationOfActionPopUp;
     [SerializeField] private GameObject actionPopUp;
@@ -57,7 +62,7 @@ public class InventoryView : MonoBehaviour
         for (i = 0; i < inventoryIconTransforms.transform.childCount; i++)
         {
             Button iconButton = inventoryIconTransforms.transform.GetChild(i).GetComponent<Button>();
-            iconButton.onClick.RemoveAllListeners();
+            //iconButton.onClick.RemoveAllListeners();
             int index = i;
             iconButton.onClick.AddListener(() => OnInventoryIconClicked(index));
         }
@@ -68,7 +73,7 @@ public class InventoryView : MonoBehaviour
         for (i = 0; i < shopIconTransforms.transform.childCount; i++)
         {
             Button iconButton = shopIconTransforms.transform.GetChild(i).GetComponent<Button>();
-            iconButton.onClick.RemoveAllListeners();
+            //iconButton.onClick.RemoveAllListeners();
             int index = i;
             iconButton.onClick.AddListener(() => OnShopIconClicked(index));
         }
@@ -85,4 +90,5 @@ public class InventoryView : MonoBehaviour
     private void OnShopIconClicked(int i) => inventoryController.ShopPopUpIcon(i,actionPopUp);
     public void RefreshShopItems() => inventoryController.RefreshShopItems(shopIconTransforms);
     public void BuyItem() => inventoryController.BuyItem(inventoryIconTransforms,shopIconTransforms,emptyIcon);
+    public void ToggleShopItems(string type) => inventoryController.ToggleShopItems(shopIconTransforms,type,emptyIcon);
 }

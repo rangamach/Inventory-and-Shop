@@ -182,7 +182,6 @@ public class InventoryController
         int i;
         for(i = 0; i<inventoryModel.InventorySize; i++)
         {
-            //int random = Random.Range(0,allItems.Count());
             List<InventoryItem> itemToAddList = RarityChooser();
             int random = Random.Range(0, itemToAddList.Count());
 
@@ -255,5 +254,46 @@ public class InventoryController
         GameObject icon = iconTransforms.transform.GetChild(selectedItem).gameObject;
         icon.transform.GetChild(0).GetComponent<Image>().sprite = emptySprite;
         icon.transform.GetChild(1).GetComponent<TextMeshProUGUI>().text = "";
+    }
+
+    public void ToggleShopItems(GameObject shopIcons, string type, Sprite emptySprite)
+    {
+        if (type == "All")
+        {
+            int i;
+            for(i = 0;i<inventoryModel.ShopItems.Count;i++)
+            {
+                shopIcons.transform.GetChild(i).gameObject.GetComponent<Button>().interactable = true;
+
+                shopIcons.transform.GetChild(i).transform.GetChild(0).GetComponent<Image>().sprite = inventoryModel.ShopItems[i].ItemIcon;
+                shopIcons.transform.GetChild(i).transform.GetChild(1).GetComponent<TextMeshProUGUI>().text = inventoryModel.ShopItems[i].ItemQuantity.ToString();
+            }
+        }
+        else
+        {
+            int i;
+            for (i = 0; i < inventoryModel.ShopItems.Count; i++)
+            {
+                if (inventoryModel.ShopItems[i] == null)
+                    continue;
+                if (inventoryModel.ShopItems[i].ItemType == (Type)System.Enum.Parse(typeof(Type), type))
+                {
+                    shopIcons.transform.GetChild(i).gameObject.GetComponent<Button>().interactable = true;
+
+                    if (shopIcons.transform.GetChild(i).GetChild(0).GetComponent<Image>().sprite == emptySprite)
+                    {
+                        shopIcons.transform.GetChild(i).transform.GetChild(0).GetComponent<Image>().sprite = inventoryModel.ShopItems[i].ItemIcon;
+                        shopIcons.transform.GetChild(i).transform.GetChild(1).GetComponent<TextMeshProUGUI>().text = inventoryModel.ShopItems[i].ItemQuantity.ToString();
+                    }
+                }
+                else
+                {
+                    shopIcons.transform.GetChild(i).gameObject.GetComponent<Button>().interactable = false;
+
+                    shopIcons.transform.GetChild(i).transform.GetChild(0).GetComponent<Image>().sprite = emptySprite;
+                    shopIcons.transform.GetChild(i).transform.GetChild(1).GetComponent<TextMeshProUGUI>().text = "";
+                }
+            }
+        }
     }
 }
