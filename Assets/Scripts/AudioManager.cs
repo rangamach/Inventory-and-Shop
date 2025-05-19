@@ -3,6 +3,9 @@ using UnityEngine;
 public enum AudioType
 {
     ButtonClick,
+    Buy,
+    Sell,
+    Deny,
 }
 
 [System.Serializable]

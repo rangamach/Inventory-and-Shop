@@ -43,7 +43,7 @@ public class InventoryView : MonoBehaviour
     [SerializeField] private GameObject actionPopUp;
 
     [Header("Audio Manager")]
-    [SerializeField] private AudioManager audioManager;
+    [SerializeField] private AudioManager audioEffect;
     
 
     void Start() => inventoryController = new InventoryController(this, size, maxWeight,AllItems); 
@@ -61,7 +61,7 @@ public class InventoryView : MonoBehaviour
     public void GatherResources() => inventoryController.AddResourcesInInventory(AllItems);
     public void InventoryIconButtonEvent()
     {
-        audioManager.PlaySoundEffect(AudioType.ButtonClick);
+        audioEffect.PlaySoundEffect(AudioType.ButtonClick);
 
         int i;
         for (i = 0; i < inventoryIconTransforms.transform.childCount; i++)
@@ -74,7 +74,7 @@ public class InventoryView : MonoBehaviour
     }
     public void ShopIconButtonEvent()
     {
-        audioManager.PlaySoundEffect(AudioType.ButtonClick);
+        audioEffect.PlaySoundEffect(AudioType.ButtonClick);
 
         int i;
         for (i = 0; i < shopIconTransforms.transform.childCount; i++)
@@ -85,7 +85,7 @@ public class InventoryView : MonoBehaviour
             iconButton.onClick.AddListener(() => OnShopIconClicked(index));
         }
     }
-    public void SellItem() => inventoryController.SellItem(inventoryIconTransforms, emptyIcon, actionPopUp);
+    public void SellItem() => inventoryController.SellItem(inventoryIconTransforms, emptyIcon, actionPopUp, audioEffect);
     public void StartActionPopUpCoroutine() => StartCoroutine(PopUpDuration());
     private IEnumerator PopUpDuration()
     {
@@ -93,9 +93,9 @@ public class InventoryView : MonoBehaviour
         yield return new WaitForSeconds(durationOfActionPopUp);
         actionPopUp.SetActive(false);
     }
-    private void OnInventoryIconClicked(int i) => inventoryController.InventoryPopUpIcon(i, iconPopUp,iconNameText,iconQuantityText,iconDescriptionText,iconPriceText,iconWeightText,iconRarityText,iconTypeText);
-    private void OnShopIconClicked(int i) => inventoryController.ShopPopUpIcon(i,actionPopUp);
-    public void RefreshShopItems() => inventoryController.RefreshShopItems(shopIconTransforms);
-    public void BuyItem() => inventoryController.BuyItem(inventoryIconTransforms,shopIconTransforms,emptyIcon);
+    private void OnInventoryIconClicked(int i) => inventoryController.InventoryPopUpIcon(i, iconPopUp,iconNameText,iconQuantityText,iconDescriptionText,iconPriceText,iconWeightText,iconRarityText,iconTypeText,audioEffect);
+    private void OnShopIconClicked(int i) => inventoryController.ShopPopUpIcon(i,actionPopUp,audioEffect);
+    public void RefreshShopItems() => inventoryController.RefreshShopItems(shopIconTransforms,audioEffect);
+    public void BuyItem() => inventoryController.BuyItem(inventoryIconTransforms,shopIconTransforms,emptyIcon,audioEffect);
     public void ToggleShopItems(string type) => inventoryController.ToggleShopItems(shopIconTransforms,type,emptyIcon);
 }

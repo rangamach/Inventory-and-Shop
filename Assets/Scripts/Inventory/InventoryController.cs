@@ -122,8 +122,10 @@ public class InventoryController
         return inventoryModel.CurrentBalance >= item.ItemBuyPrice && inventoryModel.CurrentWeight + item.ItemWeight <= inventoryModel.MaximumWeight;
     }
 
-    public void InventoryPopUpIcon(int index, GameObject IconPopUp, TextMeshProUGUI iconNameText, TextMeshProUGUI iconQuantityText, TextMeshProUGUI iconDescriptionText, TextMeshProUGUI iconPriceText, TextMeshProUGUI iconWeightText, TextMeshProUGUI iconRarityText, TextMeshProUGUI iconTypeText)
+    public void InventoryPopUpIcon(int index, GameObject IconPopUp, TextMeshProUGUI iconNameText, TextMeshProUGUI iconQuantityText, TextMeshProUGUI iconDescriptionText, TextMeshProUGUI iconPriceText, TextMeshProUGUI iconWeightText, TextMeshProUGUI iconRarityText, TextMeshProUGUI iconTypeText,AudioManager audioEffect)
     {
+        audioEffect.PlaySoundEffect(AudioType.ButtonClick);
+
         InventoryItem item = inventoryModel.InventoryItems[index];
         if (item == null) return;
 
@@ -140,8 +142,10 @@ public class InventoryController
         IconPopUp.SetActive(true);
     }
 
-    public void SellItem(GameObject inventoryIconTransforms, Sprite emptySprite, GameObject actionPopUp)
+    public void SellItem(GameObject inventoryIconTransforms, Sprite emptySprite, GameObject actionPopUp, AudioManager audioEffect)
     {
+        audioEffect.PlaySoundEffect(AudioType.Sell);
+
         Transform selectedIcon = inventoryIconTransforms.transform.GetChild(selectedItem);
 
         RemoveItemInScene(inventoryIconTransforms, emptySprite);
@@ -177,8 +181,10 @@ public class InventoryController
         }
     }
 
-    public void RefreshShopItems(GameObject shopIconTransforms)
+    public void RefreshShopItems(GameObject shopIconTransforms,AudioManager audioEffect)
     {
+        audioEffect.PlaySoundEffect(AudioType.ButtonClick);
+
         int i;
         for(i = 0; i<inventoryModel.InventorySize; i++)
         {
@@ -186,6 +192,7 @@ public class InventoryController
             int random = Random.Range(0, itemToAddList.Count());
 
             GameObject icon = shopIconTransforms.transform.GetChild(i).gameObject;
+            icon.GetComponent<Button>().interactable = true;
             icon.transform.GetChild(0).gameObject.GetComponent<Image>().sprite = itemToAddList[random].ItemIcon;
             icon.transform.GetChild(1).gameObject.GetComponent<TextMeshProUGUI>().text = itemToAddList[random].ItemQuantity.ToString();
 
@@ -193,8 +200,10 @@ public class InventoryController
         }
     }
 
-    public void ShopPopUpIcon(int i, GameObject actionPopUp)
+    public void ShopPopUpIcon(int i, GameObject actionPopUp, AudioManager audioEffect)
     {
+        audioEffect.PlaySoundEffect(AudioType.ButtonClick);
+
         TextMeshProUGUI buyText = actionPopUp.transform.GetChild(1).gameObject.GetComponent<TextMeshProUGUI>();
         buyText.text = $"Do you want to buy\n{inventoryModel.ShopItems[i].ItemName}\nfor {inventoryModel.ShopItems[i].ItemBuyPrice.ToString()} gold?";
 
@@ -204,11 +213,17 @@ public class InventoryController
 
         actionPopUp.SetActive(true);
     }
-    public void BuyItem(GameObject inventoryItemTransforms, GameObject shopItemTransforms, Sprite emptySprite)
+    public void BuyItem(GameObject inventoryItemTransforms, GameObject shopItemTransforms, Sprite emptySprite, AudioManager audioEffect)
     {
         InventoryItem buyingItem = inventoryModel.ShopItems[selectedItem];
 
-        if (!CanAfford(buyingItem)) return;
+        if (!CanAfford(buyingItem))
+        {
+            audioEffect.PlaySoundEffect(AudioType.Deny);   
+            return;
+        }
+
+        audioEffect.PlaySoundEffect(AudioType.Buy);
 
         RemoveItemInScene(shopItemTransforms, emptySprite);
 
